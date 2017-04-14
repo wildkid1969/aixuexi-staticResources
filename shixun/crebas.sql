@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/4/14 17:03:25                           */
+/* Created on:     2017/4/14 18:03:21                           */
 /*==============================================================*/
 
 
@@ -96,6 +96,7 @@ create table object_image
    image_url            varchar(200) not null default "" comment '图片链接',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    type                 tinyint not null default 0 comment '图片类型（对应objectid） 1课程作业要求 2作业内容 3作业点评 4评定寄语 ',
+   sort                 tinyint not null default 0 comment '顺序',
    primary key (image_id)
 )
 ENGINE = InnoDB

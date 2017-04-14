@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/4/14 18:03:21                           */
+/* Created on:     2017/4/14 19:14:19                           */
 /*==============================================================*/
 
 
@@ -16,11 +16,11 @@ drop table if exists user_attendance;
 
 drop table if exists user_evaluate;
 
-drop table if exists user_evaluate_details;
+drop table if exists user_evaluate_detail;
 
 drop table if exists user_homework;
 
-drop table if exists user_homework_details;
+drop table if exists user_homework_detail;
 
 /*==============================================================*/
 /* Table: course_evaluate_index                                 */
@@ -30,9 +30,9 @@ create table course_evaluate_index
    evaluate_index_id    bigint not null auto_increment,
    index_name           varchar(50) not null default "" comment '评定指标',
    course_id            bigint not null default 0 comment '课程id',
-   weight               double(6,2) not null default 0 comment '权重',
-   score_change         double(6,2) not null default 0 comment '均分调整',
-   average_score        double(6,2) not null default 0 comment '项目平均分',
+   weight               decimal(6,2) not null default 0 comment '权重',
+   score_change         decimal(6,2) not null default 0 comment '均分调整',
+   average_score        decimal(6,2) not null default 0 comment '项目平均分',
    rule_details         varchar(255) not null default "" comment '指标细则',
    type                 tinyint not null default 1 comment '评定类型1 常规 2自定义',
    createtime           datetime not null default CURRENT_TIMESTAMP comment '创建时间',
@@ -55,6 +55,7 @@ create table course_evaluate_report
    user_id              bigint not null default 0 comment '用户id',
    content              text not null default "" comment '报告内容',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
+   update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    comment              text not null default "" comment '导师寄语',
    operator_id          bigint not null default 0 comment '操作人id',
    primary key (evaluate_report_id)
@@ -95,6 +96,7 @@ create table object_image
    object_id            bigint not null default 0 comment '对象id根据type类型而定',
    image_url            varchar(200) not null default "" comment '图片链接',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
+   update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    type                 tinyint not null default 0 comment '图片类型（对应objectid） 1课程作业要求 2作业内容 3作业点评 4评定寄语 ',
    sort                 tinyint not null default 0 comment '顺序',
    primary key (image_id)
@@ -137,7 +139,7 @@ create table user_evaluate
    ins_id               bigint not null default 0 comment '机构id',
    ins_name             varchar(20) not null default "" comment '机构名称',
    user_id              bigint not null default 0 comment '用户id',
-   total_score          double(6,2) not null default 0.00 comment '总分',
+   total_score          decimal(6,2) not null default 0.00 comment '总分',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    primary key (evaluate_id)
@@ -148,27 +150,27 @@ DEFAULT CHARACTER SET = utf8;
 alter table user_evaluate comment '课程下用户的评定结果表';
 
 /*==============================================================*/
-/* Table: user_evaluate_details                                 */
+/* Table: user_evaluate_detail                                  */
 /*==============================================================*/
-create table user_evaluate_details
+create table user_evaluate_detail
 (
-   evaluate_details_id  bigint not null auto_increment,
+   evaluate_detail_id   bigint not null auto_increment,
    evaluate_id          bigint not null default 0 comment 'user_evaluate表id',
    course_id            bigint not null default 0 comment '课程id',
    user_id              bigint not null default 0 comment '用户id',
    ins_id               bigint not null default 0 comment '机构id',
    ins_name             varchar(20) not null default "" comment '机构名称',
    evaluate_index_id    bigint not null default 0 comment 'course_evaluate_index表id',
-   real_score           double(6,2) not null default 0.00 comment '真实得分',
-   final_score          double(6,2) not null default 0.00 comment '最终得分',
+   real_score           decimal(6,2) not null default 0.00 comment '真实得分',
+   final_score          decimal(6,2) not null default 0.00 comment '最终得分',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
-   primary key (evaluate_details_id)
+   primary key (evaluate_detail_id)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-alter table user_evaluate_details comment '课程下用户的评定详情表';
+alter table user_evaluate_detail comment '课程下用户的评定详情表';
 
 /*==============================================================*/
 /* Table: user_homework                                         */
@@ -183,7 +185,7 @@ create table user_homework
    work_name            varchar(100) not null default "" comment '作业名称',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
-   real_score           double(6,2) not null default 0.00 comment '作业实际得分',
+   real_score           decimal(6,2) not null default 0.00 comment '作业实际得分',
    status               tinyint not null default 1 comment '作业提交状态  1待提交 2待批改 3批改中 4已批改 5未提交',
    primary key (user_homework_id)
 )
@@ -193,9 +195,9 @@ DEFAULT CHARACTER SET = utf8;
 alter table user_homework comment '课程下用户提交的作业答案';
 
 /*==============================================================*/
-/* Table: user_homework_details                                 */
+/* Table: user_homework_detail                                  */
 /*==============================================================*/
-create table user_homework_details
+create table user_homework_detail
 (
    homework_detail_id   bigint not null auto_increment,
    course_id            bigint not null default 0 comment '课程id',
@@ -205,10 +207,11 @@ create table user_homework_details
    comment              text not null default "" comment '作业评语',
    operator_id          bigint not null default 0 comment '操作人id',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
+   update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    primary key (homework_detail_id)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-alter table user_homework_details comment '用户作业详情';
+alter table user_homework_detail comment '用户作业详情';
 

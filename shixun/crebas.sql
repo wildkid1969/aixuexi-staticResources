@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/4/14 19:14:19                           */
+/* Created on:     2017/4/15 11:48:40                           */
 /*==============================================================*/
 
 
@@ -30,9 +30,9 @@ create table course_evaluate_index
    evaluate_index_id    bigint not null auto_increment,
    index_name           varchar(50) not null default "" comment '评定指标',
    course_id            bigint not null default 0 comment '课程id',
-   weight               decimal(6,2) not null default 0 comment '权重',
-   score_change         decimal(6,2) not null default 0 comment '均分调整',
-   average_score        decimal(6,2) not null default 0 comment '项目平均分',
+   weight               decimal(6,2) not null default 0.00 comment '权重',
+   score_change         decimal(6,2) not null default 0.00 comment '均分调整',
+   average_score        decimal(6,2) not null default 0.00 comment '项目平均分',
    rule_details         varchar(255) not null default "" comment '指标细则',
    type                 tinyint not null default 1 comment '评定类型1 常规 2自定义',
    createtime           datetime not null default CURRENT_TIMESTAMP comment '创建时间',

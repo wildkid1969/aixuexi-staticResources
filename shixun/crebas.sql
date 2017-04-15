@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/4/15 11:48:40                           */
+/* Created on:     2017/4/15 15:48:22                           */
 /*==============================================================*/
 
 
@@ -35,6 +35,7 @@ create table course_evaluate_index
    average_score        decimal(6,2) not null default 0.00 comment '项目平均分',
    rule_details         varchar(255) not null default "" comment '指标细则',
    type                 tinyint not null default 1 comment '评定类型1 常规 2自定义',
+   sort                 tinyint not null default 1 comment '评定项排序 越大越靠后',
    createtime           datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    primary key (evaluate_index_id)

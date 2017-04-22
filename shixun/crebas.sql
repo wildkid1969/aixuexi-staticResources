@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/4/18 10:52:08                           */
+/* Created on:     2017/4/20 16:33:17                           */
 /*==============================================================*/
 
 
@@ -33,11 +33,11 @@ create table course_evaluate_index
    object_id            bigint not null default 0 comment '对象id（根据type来定）',
    weight               decimal(6,2) not null default 0.00 comment '权重',
    score_change         decimal(6,2) not null default 0.00 comment '均分调整',
-   average_score        decimal(6,2) not null default 0.00 comment '项目平均分',
+   average_score        decimal(6,2) not null default 0.00 comment '评定项的平均分',
    rule_details         varchar(255) not null default "" comment '指标细则',
-   type                 tinyint not null default 1 comment '评定类型1 考勤签到 course_arrangement 2 专业素质 3 作业 user_homework 4 自定义（并依次递增）',
+   type                 tinyint not null default 1 comment '评定类型1 考勤签到 course_arrangement 2 专业素质 3 作业 course_homework 4 自定义（并依次递增）',
    sort                 tinyint not null default 1 comment '评定项排序 越大越靠后',
-   createtime           datetime not null default CURRENT_TIMESTAMP comment '创建时间',
+   create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    primary key (evaluate_index_id)
 )
@@ -57,9 +57,10 @@ create table course_evaluate_report
    user_id              bigint not null default 0 comment '用户id',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
-   comment              text not null default "" comment '导师寄语',
+   comment              text comment '导师寄语',
    operator_id          bigint not null default 0 comment '操作人id',
-   primary key (evaluate_report_id)
+   primary key (evaluate_report_id),
+   unique key AK_uq_courseid_userid (course_id, user_id)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -189,7 +190,7 @@ create table user_homework
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    real_score           decimal(6,2) not null default 0.00 comment '作业实际得分',
-   status               tinyint not null default 1 comment '作业提交状态  1待提交 2待批改 3批改中 4已批改 5未提交',
+   status               tinyint not null default 1 comment '作业提交状态 0未开启  1待提交 2待批改 3批改中 4已批改 5未提交',
    primary key (user_homework_id)
 )
 ENGINE = InnoDB
@@ -207,8 +208,8 @@ create table user_homework_detail
    course_homework_id   bigint not null default 0 comment 'course_homework表的id',
    user_id              bigint not null default 0 comment '用户id',
    user_homework_id     bigint not null default 0 comment 'user_homework的id',
-   content              text not null default "" comment '作业答案',
-   comment              text not null default "" comment '作业评语',
+   content              text comment '作业答案',
+   comment              text comment '作业评语',
    operator_id          bigint not null default 0 comment '操作人id',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',

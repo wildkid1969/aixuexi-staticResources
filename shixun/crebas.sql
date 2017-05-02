@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/4/20 16:33:17                           */
+/* Created on:     2017/5/2 14:30:38                            */
 /*==============================================================*/
 
 
@@ -35,7 +35,7 @@ create table course_evaluate_index
    score_change         decimal(6,2) not null default 0.00 comment '均分调整',
    average_score        decimal(6,2) not null default 0.00 comment '评定项的平均分',
    rule_details         varchar(255) not null default "" comment '指标细则',
-   type                 tinyint not null default 1 comment '评定类型1 考勤签到 course_arrangement 2 专业素质 3 作业 course_homework 4 自定义（并依次递增）',
+   type                 tinyint not null default 1 comment '评定类型1 考勤签到 course_arrangement 2 专业素质 3 作业 course_homework表里的sort 4 自定义（并依次递增）',
    sort                 tinyint not null default 1 comment '评定项排序 越大越靠后',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
@@ -81,6 +81,7 @@ create table course_homework
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    operator_id          bigint not null default 0 comment '操作者id',
+   sort                 tinyint not null default 1 comment '作业要求的排序',
    primary key (course_homework_id)
 )
 ENGINE = InnoDB

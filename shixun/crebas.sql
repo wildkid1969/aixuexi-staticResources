@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/5/2 14:30:38                            */
+/* Created on:     2017/5/13 16:08:50                           */
 /*==============================================================*/
 
 
@@ -53,7 +53,6 @@ create table course_evaluate_report
 (
    evaluate_report_id   bigint not null auto_increment,
    course_id            bigint not null default 0 comment '课程id',
-   evaluate_id          bigint not null default 0 comment 'user_evaluate表的id',
    user_id              bigint not null default 0 comment '用户id',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
@@ -122,6 +121,7 @@ create table user_attendance
    user_name            varchar(20) not null default "" comment '用户真实姓名',
    user_subject         varchar(50) not null default "" comment '老师所教科目',
    user_phone           varchar(20) not null default "" comment '用户手机',
+   real_score           decimal(6,2) not null default 0.00 comment '签到实际得分',
    status               tinyint not null default 0 comment '状态：1已签 2迟到',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
@@ -158,15 +158,13 @@ alter table user_evaluate comment '课程下用户的评定结果表';
 create table user_evaluate_detail
 (
    evaluate_detail_id   bigint not null auto_increment,
-   evaluate_id          bigint not null default 0 comment 'user_evaluate表id',
    course_id            bigint not null default 0 comment '课程id',
-   course_arrangement_id bigint not null default 0 comment '课程安排id',
    user_id              bigint not null default 0 comment '用户id',
    ins_id               bigint not null default 0 comment '机构id',
    ins_name             varchar(20) not null default "" comment '机构名称',
    evaluate_index_id    bigint not null default 0 comment 'course_evaluate_index表id',
    real_score           decimal(6,2) not null default 0.00 comment '真实得分',
-   final_score          decimal(6,2) not null default 0.00 comment '最终得分',
+   final_score          decimal(6,2) not null default 0.00 comment '最终得分(真实乘以权重)',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    primary key (evaluate_detail_id)
@@ -174,7 +172,7 @@ create table user_evaluate_detail
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-alter table user_evaluate_detail comment '课程下用户的评定详情表';
+alter table user_evaluate_detail comment '课程下用户的各项评定总分详情表';
 
 /*==============================================================*/
 /* Table: user_homework                                         */
@@ -191,7 +189,7 @@ create table user_homework
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    real_score           decimal(6,2) not null default 0.00 comment '作业实际得分',
-   status               tinyint not null default 1 comment '作业提交状态 0未开启  1待提交 2待批改 3批改中 4已批改 5未提交',
+   status               tinyint not null default 1 comment '作业提交状态 0未开启  1待提交 2待批改 3已批改 4未提交',
    primary key (user_homework_id)
 )
 ENGINE = InnoDB

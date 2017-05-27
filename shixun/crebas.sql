@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/5/13 16:08:50                           */
+/* Created on:     2017/5/27 17:32:18                           */
 /*==============================================================*/
 
 
@@ -9,6 +9,8 @@ drop table if exists course_evaluate_index;
 drop table if exists course_evaluate_report;
 
 drop table if exists course_homework;
+
+drop table if exists course_homework_detail;
 
 drop table if exists object_image;
 
@@ -35,7 +37,7 @@ create table course_evaluate_index
    score_change         decimal(6,2) not null default 0.00 comment '均分调整',
    average_score        decimal(6,2) not null default 0.00 comment '评定项的平均分',
    rule_details         varchar(255) not null default "" comment '指标细则',
-   type                 tinyint not null default 1 comment '评定类型1 考勤签到 course_arrangement 2 专业素质 3 作业 course_homework表里的sort 4 自定义（并依次递增）',
+   type                 tinyint not null default 1 comment '评定类型1 考勤签到 user_attendance 2 专业素质 3 作业 course_homework表里的sort 4 自定义（并依次递增）',
    sort                 tinyint not null default 1 comment '评定项排序 越大越靠后',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
@@ -59,7 +61,7 @@ create table course_evaluate_report
    comment              text comment '导师寄语',
    operator_id          bigint not null default 0 comment '操作人id',
    primary key (evaluate_report_id),
-   unique key AK_uq_courseid_userid (course_id, user_id)
+   unique key uk_courseid_userid (course_id, user_id)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -76,7 +78,6 @@ create table course_homework
    work_name            varchar(100) not null default "" comment '作业名称',
    limit_start_time     datetime not null default CURRENT_TIMESTAMP comment '作业开始答题和提交限制开始时间',
    limit_end_time       datetime not null default CURRENT_TIMESTAMP comment '作业提交限制结束时间',
-   requirement          varchar(255) not null default "" comment '作业要求',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
    operator_id          bigint not null default 0 comment '操作者id',
@@ -89,6 +90,22 @@ DEFAULT CHARACTER SET = utf8;
 alter table course_homework comment '课程所属的作业';
 
 /*==============================================================*/
+/* Table: course_homework_detail                                */
+/*==============================================================*/
+create table course_homework_detail
+(
+   course_homework_detail_id bigint not null auto_increment,
+   course_homework_id   bigint not null default 0 comment 'course_homework表ID',
+   course_id            bigint not null default 0 comment '课程ID',
+   requirement          text not null comment '作业要求',
+   create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
+   update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
+   primary key (course_homework_detail_id)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+/*==============================================================*/
 /* Table: object_image                                          */
 /*==============================================================*/
 create table object_image
@@ -98,7 +115,7 @@ create table object_image
    image_url            varchar(200) not null default "" comment '图片链接',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
-   type                 tinyint not null default 0 comment '图片类型（对应objectid） 1课程作业要求course_homework 2作业内容user_homework_detail 3作业点评 user_homework_detail 4评定寄语 course_evaluate_report',
+   type                 tinyint not null default 0 comment '图片类型（对应objectid） 1课程作业要求course_homework 2作业内容user_homework_detail 3作业点评 user_homework_detail 4评定寄语 course_evaluate_report 5 移动端首页二维码',
    sort                 tinyint not null default 0 comment '顺序',
    primary key (image_id)
 )
@@ -145,7 +162,8 @@ create table user_evaluate
    total_score          decimal(6,2) not null default 0.00 comment '总分',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
-   primary key (evaluate_id)
+   primary key (evaluate_id),
+   unique key uk_courseid_userid (course_id, user_id)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -167,7 +185,8 @@ create table user_evaluate_detail
    final_score          decimal(6,2) not null default 0.00 comment '最终得分(真实乘以权重)',
    create_time          datetime not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          datetime not null default CURRENT_TIMESTAMP comment '更新时间',
-   primary key (evaluate_detail_id)
+   primary key (evaluate_detail_id),
+   unique key uq_courseid_uid_indexid (course_id, user_id, evaluate_index_id)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;

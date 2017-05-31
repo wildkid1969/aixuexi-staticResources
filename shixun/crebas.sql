@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/5/27 17:32:18                           */
+/* Created on:     2017/5/31 18:30:45                           */
 /*==============================================================*/
 
 
@@ -238,3 +238,5 @@ DEFAULT CHARACTER SET = utf8;
 
 alter table user_homework_detail comment '用户作业详情';
 
+alter table course add column `issued_evaluate` int(1) NOT NULL DEFAULT '0' COMMENT '下发评定 0 否 1 是';
+alter table course_arrangement add column REDUCE_SCORE double NOT NULL DEFAULT '0' COMMENT '扣除的分数';
